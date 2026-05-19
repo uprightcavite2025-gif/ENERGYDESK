@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brain Break 01 - Emoji Mood Check</title>
+  <style>
+    :root {
+      --atria-blue: #211499;
+      --atria-navy: #000C48;
+      --atria-teal: #3FC2C2;
+      --atria-light: #CDFFFC;
+      --card-bg: rgba(255, 255, 255, 0.94);
+      --text: #172033;
+      --muted: #5b6475;
+      --shadow: 0 24px 70px rgba(0, 12, 72, 0.24);
+      --radius: 26px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(99, 248, 239, 0.42), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(63, 194, 194, 0.35), transparent 32%),
+        linear-gradient(135deg, var(--atria-navy), var(--atria-blue));
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+    }
+
+    .brain-break {
+      width: min(980px, 100%);
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.48);
+    }
+
+    .hero {
+      background:
+        linear-gradient(135deg, rgba(33, 20, 153, 0.96), rgba(0, 12, 72, 0.98)),
+        radial-gradient(circle at right, rgba(63, 194, 194, 0.6), transparent 40%);
+      color: #fff;
+      padding: clamp(26px, 5vw, 48px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 230px;
+      height: 230px;
+      border-radius: 999px;
+      background: rgba(99, 248, 239, 0.18);
+      right: -80px;
+      top: -80px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      color: var(--atria-light);
+      font-size: 0.86rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin: 18px 0 0;
+      font-size: clamp(1rem, 2vw, 1.18rem);
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.86);
+      position: relative;
+      z-index: 1;
+    }
+
+    .content {
+      padding: clamp(22px, 4vw, 42px);
+    }
+
+    .instruction {
+      margin: 0 0 22px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 1rem;
+    }
+
+    .mood-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+      margin: 24px 0 28px;
+    }
+
+    .mood-btn {
+      appearance: none;
+      border: 2px solid rgba(33, 20, 153, 0.10);
+      background: #ffffff;
+      border-radius: 22px;
+      padding: 18px 10px;
+      min-height: 135px;
+      cursor: pointer;
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-align: center;
+    }
+
+    .mood-btn:hover,
+    .mood-btn:focus-visible {
+      transform: translateY(-4px);
+      border-color: var(--atria-teal);
+      box-shadow: 0 14px 30px rgba(33, 20, 153, 0.15);
+      outline: none;
+    }
+
+    .mood-btn.selected {
+      background: linear-gradient(180deg, #ffffff, #ecfffe);
+      border-color: var(--atria-teal);
+      box-shadow: 0 18px 36px rgba(63, 194, 194, 0.22);
+    }
+
+    .emoji {
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      line-height: 1;
+    }
+
+    .label {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--atria-navy);
+    }
+
+    .result {
+      display: none;
+      padding: 22px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(205, 255, 252, 0.72), rgba(255, 255, 255, 0.95));
+      border: 1px solid rgba(63, 194, 194, 0.35);
+      animation: fadeIn 0.28s ease both;
+    }
+
+    .result.show {
+      display: block;
+    }
+
+    .result h2 {
+      margin: 0 0 8px;
+      color: var(--atria-blue);
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      letter-spacing: -0.03em;
+    }
+
+    .result p {
+      margin: 0;
+      color: #2c3447;
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+
+    .micro-action {
+      margin-top: 16px;
+      padding: 16px;
+      background: #ffffff;
+      border-radius: 18px;
+      border: 1px dashed rgba(33, 20, 153, 0.22);
+      color: var(--atria-navy);
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .footer-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 22px;
+      flex-wrap: wrap;
+    }
+
+    .timer {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .reset-btn {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 13px 18px;
+      background: var(--atria-blue);
+      color: #ffffff;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.16s ease, background 0.16s ease;
+    }
+
+    .reset-btn:hover,
+    .reset-btn:focus-visible {
+      transform: translateY(-2px);
+      background: var(--atria-navy);
+      outline: none;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 760px) {
+      body {
+        padding: 14px;
+        align-items: flex-start;
+      }
+
+      .mood-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .mood-btn:last-child {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .mood-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .mood-btn:last-child {
+        grid-column: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="brain-break" aria-labelledby="page-title">
+    <section class="hero">
+      <div class="eyebrow">☕ Brain Break 01 · 1 minute</div>
+      <h1 id="page-title">Emoji Mood Check</h1>
+      <p>Pause for a moment. Choose the emoji that best matches your energy right now, then take one small action before continuing.</p>
+    </section>
+
+    <section class="content">
+      <p class="instruction">There is no right or wrong answer. This is simply a short reset to help you notice your current state and return to the lesson with better focus.</p>
+
+      <div class="mood-grid" role="group" aria-label="Choose your current mood">
+        <button class="mood-btn" type="button" data-title="Ready and focused" data-message="Great. You are in a good state to continue. Keep your pace steady and protect your focus." data-action="Before moving on, take one slow breath and decide one thing you want to remember from the next part.">
+          <span class="emoji" aria-hidden="true">😊</span>
+          <span class="label">Ready</span>
+        </button>
+
+        <button class="mood-btn" type="button" data-title="Curious and open" data-message="Nice. Curiosity makes learning easier. Keep asking: ‘How can I use this in real work?’" data-action="Before moving on, write down or mentally note one question you want the next lesson to answer.">
+          <span class="emoji" aria-hidden="true">🤔</span>
+          <span class="label">Curious</span>
+        </button>
+
+        <button class="mood-btn" type="button" data-title="A little tired" data-message="That is okay. Learning can still continue, but your brain may need a softer restart." data-action="Before moving on, roll your shoulders, look away from the screen for five seconds, and take one deep breath.">
+          <span class="emoji" aria-hidden="true">😴</span>
+          <span class="label">Tired</span>
+        </button>
+
+        <button class="mood-btn" type="button" data-title="Slightly overloaded" data-message="Thank you for noticing it. When there is too much information, the best move is to slow down and focus on one useful idea." data-action="Before moving on, choose only one key point from the previous lesson that matters most to you.">
+          <span class="emoji" aria-hidden="true">😵‍💫</span>
+          <span class="label">Overloaded</span>
+        </button>
+
+        <button class="mood-btn" type="button" data-title="Motivated to continue" data-message="Excellent. Use that momentum. A good next step is to connect the lesson to your own work or team context." data-action="Before moving on, think of one real situation where you can apply the next idea.">
+          <span class="emoji" aria-hidden="true">🚀</span>
+          <span class="label">Motivated</span>
+        </button>
+      </div>
+
+      <section class="result" id="result" aria-live="polite">
+        <h2 id="resultTitle">Choose a mood to begin.</h2>
+        <p id="resultMessage"></p>
+        <div class="micro-action" id="resultAction"></div>
+      </section>
+
+      <div class="footer-actions">
+        <span class="timer">Suggested time: 30–60 seconds</span>
+        <button class="reset-btn" type="button" id="resetBtn">Reset activity</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const buttons = document.querySelectorAll('.mood-btn');
+    const result = document.getElementById('result');
+    const resultTitle = document.getElementById('resultTitle');
+    const resultMessage = document.getElementById('resultMessage');
+    const resultAction = document.getElementById('resultAction');
+    const resetBtn = document.getElementById('resetBtn');
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        buttons.forEach((item) => item.classList.remove('selected'));
+        button.classList.add('selected');
+
+        resultTitle.textContent = button.dataset.title;
+        resultMessage.textContent = button.dataset.message;
+        resultAction.textContent = button.dataset.action;
+        result.classList.add('show');
+        result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    });
+
+    resetBtn.addEventListener('click', () => {
+      buttons.forEach((item) => item.classList.remove('selected'));
+      result.classList.remove('show');
+      resultTitle.textContent = 'Choose a mood to begin.';
+      resultMessage.textContent = '';
+      resultAction.textContent = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>
