@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brain Break 03 - Breathing Circle Calm Reset</title>
+  <style>
+    :root {
+      --atria-blue: #211499;
+      --atria-navy: #000C48;
+      --atria-teal: #3FC2C2;
+      --atria-neon: #63F8EF;
+      --atria-light: #CDFFFC;
+      --card-bg: rgba(255, 255, 255, 0.96);
+      --text: #172033;
+      --muted: #5b6475;
+      --shadow: 0 18px 46px rgba(0, 12, 72, 0.22);
+      --radius: clamp(16px, 2vw, 24px);
+      --page-pad: clamp(8px, 2vw, 20px);
+      --shell-height: calc(var(--vh, 1vh) * 100 - (var(--page-pad) * 2));
+      --stage-size: clamp(240px, min(44vw, 54vh), 420px);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100svh;
+      background:
+        radial-gradient(circle at top left, rgba(99, 248, 239, 0.42), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(63, 194, 194, 0.35), transparent 32%),
+        linear-gradient(135deg, var(--atria-navy), var(--atria-blue));
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      padding: var(--page-pad);
+    }
+
+    .reset-shell {
+      width: min(1180px, 100%);
+      max-height: var(--shell-height);
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: auto;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero {
+      background:
+        linear-gradient(135deg, rgba(33, 20, 153, 0.96), rgba(0, 12, 72, 0.98)),
+        radial-gradient(circle at right, rgba(63, 194, 194, 0.6), transparent 40%);
+      color: #fff;
+      padding: clamp(16px, 3vw, 32px);
+      position: relative;
+      overflow: hidden;
+      flex: 0 0 auto;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: clamp(150px, 24vw, 220px);
+      height: clamp(150px, 24vw, 220px);
+      border-radius: 50%;
+      background: rgba(99, 248, 239, 0.14);
+      right: clamp(-90px, -8vw, -50px);
+      top: clamp(-90px, -8vw, -50px);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      color: var(--atria-light);
+      font-size: clamp(0.72rem, 1.4vw, 0.86rem);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin-bottom: clamp(8px, 1.5vw, 12px);
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.65rem, 4.2vw, 3.2rem);
+      line-height: 1;
+      letter-spacing: -0.05em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero p {
+      max-width: 780px;
+      margin: clamp(8px, 1.5vw, 12px) 0 0;
+      font-size: clamp(0.88rem, 1.6vw, 1.06rem);
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.86);
+      position: relative;
+      z-index: 1;
+    }
+
+    .content {
+      padding: clamp(12px, 2.4vw, 26px);
+      display: grid;
+      grid-template-columns: minmax(260px, 0.9fr) minmax(320px, 1.1fr);
+      gap: clamp(12px, 2vw, 22px);
+      align-items: stretch;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .panel {
+      background: #fff;
+      border: 1px solid rgba(33, 20, 153, 0.1);
+      border-radius: clamp(16px, 2vw, 22px);
+      padding: clamp(12px, 2vw, 20px);
+    }
+
+    .guide-panel {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(12px, 2vw, 18px);
+      justify-content: space-between;
+    }
+
+    .guide-panel h2,
+    .breathing-panel h2 {
+      margin: 0 0 8px;
+      color: var(--atria-blue);
+      font-size: clamp(1.05rem, 2.2vw, 1.5rem);
+      letter-spacing: -0.03em;
+    }
+
+    .guide-panel p,
+    .breathing-panel p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: clamp(0.85rem, 1.45vw, 1rem);
+    }
+
+    .steps {
+      display: grid;
+      gap: clamp(8px, 1.4vw, 10px);
+      margin-top: clamp(10px, 1.8vw, 14px);
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: clamp(32px, 4vw, 38px) minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      padding: clamp(9px, 1.6vw, 12px);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #ffffff, #f2fffe);
+      border: 1px solid rgba(63, 194, 194, 0.24);
+    }
+
+    .step-icon {
+      width: clamp(32px, 4vw, 38px);
+      height: clamp(32px, 4vw, 38px);
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: var(--atria-blue);
+      color: #fff;
+      font-weight: 900;
+      font-size: clamp(0.85rem, 1.6vw, 1rem);
+    }
+
+    .step strong {
+      display: block;
+      color: var(--atria-navy);
+      font-size: clamp(0.86rem, 1.4vw, 0.94rem);
+      margin-bottom: 2px;
+    }
+
+    .step span {
+      display: block;
+      color: var(--muted);
+      font-size: clamp(0.76rem, 1.3vw, 0.84rem);
+      line-height: 1.4;
+    }
+
+    .breathing-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      justify-content: center;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .breathing-stage {
+      position: relative;
+      width: var(--stage-size);
+      height: var(--stage-size);
+      max-width: 100%;
+      margin: clamp(8px, 2vw, 20px) auto;
+      display: grid;
+      place-items: center;
+      overflow: visible;
+      flex: 0 0 auto;
+    }
+
+    .outer-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99, 248, 239, 0.18), transparent 68%);
+      border: 1px solid rgba(63, 194, 194, 0.22);
+    }
+
+    .middle-ring {
+      position: absolute;
+      width: 72%;
+      height: 72%;
+      border-radius: 50%;
+      border: 2px dashed rgba(33, 20, 153, 0.16);
+    }
+
+    .breath-circle {
+      position: absolute;
+      width: 42%;
+      height: 42%;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.8), transparent 28%),
+        linear-gradient(145deg, var(--atria-teal), var(--atria-blue));
+      box-shadow: 0 24px 58px rgba(33, 20, 153, 0.28);
+      color: #fff;
+      transform: scale(1);
+      transition: transform 4s ease-in-out;
+      overflow: hidden;
+      will-change: transform;
+    }
+
+    .circle-text {
+      display: grid;
+      gap: clamp(3px, 1vw, 6px);
+      place-items: center;
+      padding: clamp(8px, 2vw, 12px);
+      text-align: center;
+      width: 100%;
+    }
+
+    .phase {
+      font-size: clamp(0.95rem, min(3vw, 3vh), 1.85rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .count {
+      font-size: clamp(0.68rem, min(1.8vw, 1.8vh), 1rem);
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.88);
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .cycle-status {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(6px, 1.4vw, 8px);
+      width: min(100%, 500px);
+      margin: 2px auto 0;
+      flex: 0 0 auto;
+    }
+
+    .status-item {
+      padding: clamp(8px, 1.6vw, 10px) clamp(4px, 1.2vw, 8px);
+      border-radius: 15px;
+      background: linear-gradient(180deg, #ffffff, #f2fffe);
+      border: 1px solid rgba(63, 194, 194, 0.24);
+      text-align: center;
+      min-width: 0;
+    }
+
+    .status-value {
+      display: block;
+      color: var(--atria-navy);
+      font-size: clamp(0.95rem, 2.2vw, 1.22rem);
+      font-weight: 900;
+      line-height: 1;
+      overflow-wrap: anywhere;
+    }
+
+    .status-label {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: clamp(0.66rem, 1.2vw, 0.72rem);
+      font-weight: 700;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: clamp(12px, 2vw, 16px);
+      width: 100%;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: clamp(11px, 1.8vw, 13px) clamp(15px, 2.2vw, 18px);
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform 0.16s ease, background 0.16s ease;
+      min-width: min(180px, 100%);
+    }
+
+    .primary-btn {
+      background: var(--atria-blue);
+      color: #fff;
+    }
+
+    .secondary-btn {
+      background: #eef7f7;
+      color: var(--atria-navy);
+      border: 1px solid rgba(33, 20, 153, 0.12);
+    }
+
+    .primary-btn:hover,
+    .secondary-btn:hover,
+    .primary-btn:focus-visible,
+    .secondary-btn:focus-visible {
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    .primary-btn:hover,
+    .primary-btn:focus-visible {
+      background: var(--atria-navy);
+    }
+
+    .completion-panel {
+      display: none;
+      margin-top: 14px;
+      padding: clamp(12px, 2vw, 16px);
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(205, 255, 252, 0.74), rgba(255, 255, 255, 0.95));
+      border: 1px solid rgba(63, 194, 194, 0.35);
+      animation: fadeIn 0.28s ease both;
+      text-align: left;
+      width: 100%;
+    }
+
+    .completion-panel.show {
+      display: block;
+    }
+
+    .completion-panel strong {
+      display: block;
+      color: var(--atria-blue);
+      font-size: clamp(0.98rem, 1.8vw, 1.05rem);
+      margin-bottom: 6px;
+    }
+
+    .completion-panel span {
+      color: #2c3447;
+      font-size: clamp(0.84rem, 1.4vw, 0.94rem);
+      line-height: 1.6;
+    }
+
+    .footer-note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: clamp(0.76rem, 1.4vw, 0.88rem);
+      text-align: center;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Laptop and medium screens */
+    @media (max-width: 980px) {
+      :root {
+        --stage-size: clamp(250px, 58vw, 380px);
+      }
+
+      .reset-shell {
+        max-height: none;
+      }
+
+      .content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Tablets and iPad portrait */
+    @media (max-width: 760px) {
+      :root {
+        --stage-size: clamp(240px, 76vw, 340px);
+      }
+
+      body {
+        place-items: start center;
+      }
+
+      .hero {
+        padding: 18px;
+      }
+
+      .content {
+        padding: 14px;
+      }
+    }
+
+    /* Mobile phones */
+    @media (max-width: 460px) {
+      :root {
+        --page-pad: 8px;
+        --stage-size: clamp(220px, 84vw, 300px);
+      }
+
+      .hero {
+        padding: 16px;
+      }
+
+      .hero p {
+        display: none;
+      }
+
+      .content {
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .phase {
+        font-size: clamp(0.88rem, 6.8vw, 1.35rem);
+      }
+
+      .count {
+        font-size: clamp(0.62rem, 3.4vw, 0.82rem);
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .primary-btn,
+      .secondary-btn {
+        width: 100%;
+      }
+    }
+
+    /* Very narrow mobile screens */
+    @media (max-width: 340px) {
+      :root {
+        --stage-size: 218px;
+      }
+
+      .cycle-status {
+        grid-template-columns: 1fr;
+      }
+
+      .step span {
+        display: none;
+      }
+    }
+
+    /* Short laptop/desktop screens */
+    @media (min-width: 981px) and (max-height: 760px) {
+      :root {
+        --stage-size: clamp(230px, 48vh, 320px);
+      }
+
+      .hero {
+        padding: 14px 22px;
+      }
+
+      .hero p {
+        display: none;
+      }
+
+      .content {
+        padding: 14px 20px;
+      }
+
+      .steps {
+        gap: 7px;
+      }
+
+      .step {
+        padding: 8px 10px;
+      }
+
+      .footer-note {
+        margin-top: 8px;
+      }
+    }
+
+    /* Extra short iframe areas */
+    @media (max-height: 620px) {
+      .hero p {
+        display: none;
+      }
+
+      .eyebrow {
+        margin-bottom: 8px;
+      }
+
+      .guide-panel p,
+      .step span,
+      .footer-note {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="reset-shell" aria-labelledby="page-title">
+    <section class="hero">
+      <div class="eyebrow">🌿 Brain Break 03 · Calm Reset</div>
+      <h1 id="page-title">Breathing Circle</h1>
+      <p>Follow the circle as it grows and shrinks. This short breathing activity uses a steady 4–4–4–4 rhythm for three complete sets.</p>
+    </section>
+
+    <section class="content">
+      <aside class="panel guide-panel">
+        <div>
+          <h2>How to use this break</h2>
+          <p>Press start, then follow the breathing guide. The circle expands and contracts to support your rhythm.</p>
+
+          <div class="steps" aria-label="Breathing steps">
+            <div class="step">
+              <div class="step-icon">1</div>
+              <div>
+                <strong>Inhale - 4 seconds</strong>
+                <span>Breathe in slowly as the circle grows.</span>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-icon">2</div>
+              <div>
+                <strong>Hold - 4 seconds</strong>
+                <span>Pause gently and stay relaxed.</span>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-icon">3</div>
+              <div>
+                <strong>Exhale - 4 seconds</strong>
+                <span>Breathe out slowly as the circle becomes smaller.</span>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-icon">4</div>
+              <div>
+                <strong>Hold - 4 seconds</strong>
+                <span>Pause again before repeating the next set.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="completion-panel" id="completionPanel" aria-live="polite">
+          <strong>Calm reset complete.</strong>
+          <span>You finished 3 full sets of the breathing cycle. Take a moment, relax your shoulders, and continue when you are ready.</span>
+        </div>
+      </aside>
+
+      <section class="panel breathing-panel">
+        <h2 id="phaseTitle">Ready to begin?</h2>
+        <p id="phaseInstruction">Start the breathing guide and follow the 4–4–4–4 rhythm.</p>
+
+        <div class="breathing-stage" aria-label="Animated breathing circle">
+          <div class="outer-ring"></div>
+          <div class="middle-ring"></div>
+          <div class="breath-circle" id="breathCircle">
+            <div class="circle-text">
+              <span class="phase" id="phaseText">Ready</span>
+              <span class="count" id="countText">3 sets</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="cycle-status" aria-label="Breathing progress">
+          <div class="status-item">
+            <span class="status-value" id="roundText">0/3</span>
+            <span class="status-label">Sets</span>
+          </div>
+          <div class="status-item">
+            <span class="status-value" id="timerText">0:00</span>
+            <span class="status-label">Time</span>
+          </div>
+          <div class="status-item">
+            <span class="status-value" id="stateText">Idle</span>
+            <span class="status-label">State</span>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="primary-btn" type="button" id="startBtn">Start calm reset</button>
+          <button class="secondary-btn" type="button" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="footer-note">Pattern: Inhale 4s → Hold 4s → Exhale 4s → Hold 4s × 3 sets</div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const root = document.documentElement;
+    const breathCircle = document.getElementById('breathCircle');
+    const phaseTitle = document.getElementById('phaseTitle');
+    const phaseInstruction = document.getElementById('phaseInstruction');
+    const phaseText = document.getElementById('phaseText');
+    const countText = document.getElementById('countText');
+    const roundText = document.getElementById('roundText');
+    const timerText = document.getElementById('timerText');
+    const stateText = document.getElementById('stateText');
+    const startBtn = document.getElementById('startBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const completionPanel = document.getElementById('completionPanel');
+
+    const totalSets = 3;
+
+    const phases = [
+      {
+        name: 'Inhale',
+        duration: 4000,
+        scale: 1.55,
+        title: 'Inhale slowly',
+        instruction: 'Breathe in for 4 seconds as the circle expands.',
+        state: 'Inhale'
+      },
+      {
+        name: 'Hold',
+        duration: 4000,
+        scale: 1.55,
+        title: 'Hold gently',
+        instruction: 'Hold for 4 seconds and stay relaxed.',
+        state: 'Hold'
+      },
+      {
+        name: 'Exhale',
+        duration: 4000,
+        scale: 1,
+        title: 'Exhale slowly',
+        instruction: 'Breathe out for 4 seconds as the circle becomes smaller.',
+        state: 'Exhale'
+      },
+      {
+        name: 'Hold',
+        duration: 4000,
+        scale: 1,
+        title: 'Hold gently',
+        instruction: 'Hold for 4 seconds before the next set begins.',
+        state: 'Hold'
+      }
+    ];
+
+    let activeTimeout = null;
+    let timerInterval = null;
+    let elapsedSeconds = 0;
+    let currentSet = 0;
+    let isRunning = false;
+
+    function setViewportHeight() {
+      root.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+    }
+
+    function formatTime(totalSeconds) {
+      const minutes = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      return `${minutes}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        elapsedSeconds += 1;
+        timerText.textContent = formatTime(elapsedSeconds);
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    function setCircleScale(scale, duration) {
+      breathCircle.style.transition = `transform ${duration / 1000}s ease-in-out`;
+      breathCircle.style.transform = `scale(${scale})`;
+    }
+
+    function setPhase(phase, setNumber) {
+      setCircleScale(phase.scale, phase.duration);
+      phaseTitle.textContent = phase.title;
+      phaseInstruction.textContent = phase.instruction;
+      phaseText.textContent = phase.name;
+      countText.textContent = `Set ${setNumber} of ${totalSets}`;
+      roundText.textContent = `${setNumber}/${totalSets}`;
+      stateText.textContent = phase.state;
+    }
+
+    function runPhase(setNumber, phaseIndex) {
+      if (!isRunning) return;
+
+      if (setNumber > totalSets) {
+        completeSession();
+        return;
+      }
+
+      const phase = phases[phaseIndex];
+      setPhase(phase, setNumber);
+
+      activeTimeout = setTimeout(() => {
+        const nextPhaseIndex = phaseIndex + 1;
+        if (nextPhaseIndex >= phases.length) {
+          runPhase(setNumber + 1, 0);
+        } else {
+          runPhase(setNumber, nextPhaseIndex);
+        }
+      }, phase.duration);
+    }
+
+    function startSession() {
+      if (isRunning) return;
+      resetSession(false);
+      isRunning = true;
+      currentSet = 1;
+      completionPanel.classList.remove('show');
+      startBtn.disabled = true;
+      startBtn.textContent = 'Breathing...';
+      startTimer();
+      runPhase(currentSet, 0);
+    }
+
+    function completeSession() {
+      isRunning = false;
+      stopTimer();
+      startBtn.disabled = false;
+      startBtn.textContent = 'Start again';
+      phaseTitle.textContent = 'Well done.';
+      phaseInstruction.textContent = 'You completed 3 full breathing sets.';
+      phaseText.textContent = 'Done';
+      countText.textContent = 'Reset complete';
+      roundText.textContent = `${totalSets}/${totalSets}`;
+      stateText.textContent = 'Done';
+      completionPanel.classList.add('show');
+      completionPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function resetSession(scrollToTop = true) {
+      isRunning = false;
+      clearTimeout(activeTimeout);
+      stopTimer();
+      elapsedSeconds = 0;
+      currentSet = 0;
+      timerText.textContent = '0:00';
+      roundText.textContent = `0/${totalSets}`;
+      stateText.textContent = 'Idle';
+      phaseTitle.textContent = 'Ready to begin?';
+      phaseInstruction.textContent = 'Start the breathing guide and follow the 4–4–4–4 rhythm.';
+      phaseText.textContent = 'Ready';
+      countText.textContent = `${totalSets} sets`;
+      breathCircle.style.transition = 'transform 0.4s ease-in-out';
+      breathCircle.style.transform = 'scale(1)';
+      startBtn.disabled = false;
+      startBtn.textContent = 'Start calm reset';
+      completionPanel.classList.remove('show');
+
+      if (scrollToTop) {
+        document.querySelector('.reset-shell').scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    setViewportHeight();
+    window.addEventListener('resize', setViewportHeight);
+    window.addEventListener('orientationchange', setViewportHeight);
+    startBtn.addEventListener('click', startSession);
+    resetBtn.addEventListener('click', () => resetSession(true));
+  </script>
+</body>
+</html>
