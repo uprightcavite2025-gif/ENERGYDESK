@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brain Break 05 - 5 Senses Focus Reset</title>
+  <style>
+    :root {
+      --atria-blue: #211499;
+      --atria-navy: #000C48;
+      --atria-teal: #3FC2C2;
+      --atria-neon: #63F8EF;
+      --atria-light: #CDFFFC;
+      --card-bg: rgba(255, 255, 255, 0.96);
+      --text: #172033;
+      --muted: #5b6475;
+      --success: #167a6f;
+      --warning: #d9822b;
+      --shadow: 0 18px 46px rgba(0, 12, 72, 0.22);
+      --radius: clamp(16px, 2vw, 24px);
+      --page-pad: clamp(8px, 2vw, 20px);
+      --shell-height: calc(var(--vh, 1vh) * 100 - (var(--page-pad) * 2));
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100svh;
+      background:
+        radial-gradient(circle at top left, rgba(99, 248, 239, 0.42), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(63, 194, 194, 0.35), transparent 32%),
+        linear-gradient(135deg, var(--atria-navy), var(--atria-blue));
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      padding: var(--page-pad);
+    }
+
+    .activity-shell {
+      width: min(1180px, 100%);
+      max-height: var(--shell-height);
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: auto;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero {
+      background:
+        linear-gradient(135deg, rgba(33, 20, 153, 0.96), rgba(0, 12, 72, 0.98)),
+        radial-gradient(circle at right, rgba(63, 194, 194, 0.6), transparent 40%);
+      color: #fff;
+      padding: clamp(16px, 3vw, 32px);
+      position: relative;
+      overflow: hidden;
+      flex: 0 0 auto;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: clamp(150px, 24vw, 220px);
+      height: clamp(150px, 24vw, 220px);
+      border-radius: 50%;
+      background: rgba(99, 248, 239, 0.14);
+      right: clamp(-90px, -8vw, -50px);
+      top: clamp(-90px, -8vw, -50px);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      color: var(--atria-light);
+      font-size: clamp(0.72rem, 1.4vw, 0.86rem);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin-bottom: clamp(8px, 1.5vw, 12px);
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.65rem, 4.2vw, 3.2rem);
+      line-height: 1;
+      letter-spacing: -0.05em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero p {
+      max-width: 820px;
+      margin: clamp(8px, 1.5vw, 12px) 0 0;
+      font-size: clamp(0.88rem, 1.6vw, 1.06rem);
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.86);
+      position: relative;
+      z-index: 1;
+    }
+
+    .content {
+      padding: clamp(12px, 2.4vw, 26px);
+      display: grid;
+      grid-template-columns: minmax(280px, 0.8fr) minmax(360px, 1.2fr);
+      gap: clamp(12px, 2vw, 22px);
+      align-items: start;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .panel {
+      background: #fff;
+      border: 1px solid rgba(33, 20, 153, 0.1);
+      border-radius: clamp(16px, 2vw, 22px);
+      padding: clamp(12px, 2vw, 20px);
+    }
+
+    .guide-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: clamp(12px, 2vw, 18px);
+    }
+
+    .guide-panel h2,
+    .sense-panel h2 {
+      margin: 0 0 8px;
+      color: var(--atria-blue);
+      font-size: clamp(1.05rem, 2.2vw, 1.5rem);
+      letter-spacing: -0.03em;
+    }
+
+    .guide-panel p,
+    .sense-panel p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: clamp(0.85rem, 1.45vw, 1rem);
+    }
+
+    .mini-steps {
+      display: grid;
+      gap: clamp(8px, 1.4vw, 10px);
+      margin-top: clamp(10px, 1.8vw, 14px);
+    }
+
+    .mini-step,
+    .safe-note {
+      display: grid;
+      grid-template-columns: clamp(34px, 4vw, 40px) minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      padding: clamp(9px, 1.6vw, 12px);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #ffffff, #f2fffe);
+      border: 1px solid rgba(63, 194, 194, 0.24);
+    }
+
+    .safe-note {
+      margin-top: 14px;
+      background: linear-gradient(180deg, #ffffff, #f8ffff);
+      border-style: dashed;
+    }
+
+    .mini-icon,
+    .safe-icon {
+      width: clamp(34px, 4vw, 40px);
+      height: clamp(34px, 4vw, 40px);
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: var(--atria-blue);
+      color: #fff;
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      font-weight: 900;
+    }
+
+    .mini-step strong,
+    .safe-note strong {
+      display: block;
+      color: var(--atria-navy);
+      font-size: clamp(0.86rem, 1.4vw, 0.96rem);
+      margin-bottom: 2px;
+    }
+
+    .mini-step span,
+    .safe-note span {
+      display: block;
+      color: var(--muted);
+      font-size: clamp(0.76rem, 1.3vw, 0.84rem);
+      line-height: 1.4;
+    }
+
+    .sense-panel {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: visible;
+    }
+
+    .progress-row {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: clamp(6px, 1vw, 10px);
+      margin: clamp(12px, 2vw, 16px) 0;
+    }
+
+    .progress-dot {
+      border: 1px solid rgba(33, 20, 153, 0.12);
+      border-radius: 999px;
+      background: #f3f7fb;
+      padding: 8px 6px;
+      color: var(--muted);
+      font-size: clamp(0.68rem, 1.2vw, 0.78rem);
+      font-weight: 800;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .progress-dot.active {
+      background: var(--atria-blue);
+      color: #ffffff;
+      border-color: var(--atria-blue);
+    }
+
+    .progress-dot.done {
+      background: #e9fff9;
+      color: var(--success);
+      border-color: rgba(22, 122, 111, 0.32);
+    }
+
+    .sense-card {
+      flex: 0 0 auto;
+      min-height: auto;
+      border-radius: clamp(18px, 2vw, 24px);
+      background:
+        radial-gradient(circle at top right, rgba(99, 248, 239, 0.24), transparent 36%),
+        linear-gradient(180deg, #ffffff, #f7ffff);
+      border: 1px solid rgba(63, 194, 194, 0.28);
+      padding: clamp(16px, 2.6vw, 28px);
+      display: grid;
+      grid-template-columns: minmax(100px, 0.34fr) minmax(0, 1fr);
+      gap: clamp(14px, 2vw, 22px);
+      align-items: start;
+    }
+
+    .sense-visual {
+      width: clamp(92px, 13vw, 150px);
+      height: clamp(92px, 13vw, 150px);
+      max-width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 36px;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.86), transparent 28%),
+        linear-gradient(145deg, var(--atria-teal), var(--atria-blue));
+      box-shadow: 0 18px 42px rgba(33, 20, 153, 0.22);
+      color: #fff;
+      font-size: clamp(2.5rem, 5vw, 4.8rem);
+      align-self: start;
+    }
+
+    .sense-copy {
+      min-width: 0;
+    }
+
+    .sense-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(33, 20, 153, 0.08);
+      color: var(--atria-blue);
+      font-size: clamp(0.74rem, 1.3vw, 0.86rem);
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .sense-title {
+      margin: 0 0 10px;
+      color: var(--atria-navy);
+      font-size: clamp(1.35rem, 3vw, 2.35rem);
+      line-height: 1.05;
+      letter-spacing: -0.05em;
+    }
+
+    .sense-prompt {
+      margin: 0;
+      color: #2d3548;
+      font-size: clamp(0.95rem, 1.65vw, 1.08rem);
+      line-height: 1.65;
+    }
+
+    .micro-action {
+      margin-top: 14px;
+      padding: clamp(12px, 2vw, 16px);
+      border-radius: 18px;
+      background: #ffffff;
+      border: 1px dashed rgba(33, 20, 153, 0.22);
+      color: var(--atria-navy);
+      font-size: clamp(0.88rem, 1.5vw, 0.98rem);
+      line-height: 1.55;
+      font-weight: 800;
+    }
+
+    .trivia-box {
+      margin-top: 12px;
+      padding: clamp(12px, 2vw, 16px);
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(205, 255, 252, 0.52), rgba(255, 255, 255, 0.96));
+      border: 1px solid rgba(63, 194, 194, 0.34);
+      text-align: left;
+    }
+
+    .trivia-box strong {
+      display: block;
+      color: var(--atria-blue);
+      font-size: clamp(0.86rem, 1.4vw, 0.96rem);
+      margin-bottom: 5px;
+    }
+
+    .trivia-box span {
+      display: block;
+      color: #2d3548;
+      font-size: clamp(0.82rem, 1.4vw, 0.94rem);
+      line-height: 1.55;
+    }
+
+    .final-list {
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: #2c3447;
+      font-size: clamp(0.84rem, 1.45vw, 0.96rem);
+      line-height: 1.6;
+    }
+
+    .final-list li {
+      margin: 4px 0;
+    }
+
+    .reflection-box {
+      margin-top: clamp(12px, 2vw, 16px);
+    }
+
+    .reflection-box label {
+      display: block;
+      color: var(--atria-navy);
+      font-weight: 900;
+      margin-bottom: 7px;
+      font-size: clamp(0.86rem, 1.4vw, 0.96rem);
+    }
+
+    .reflection-box textarea {
+      width: 100%;
+      min-height: clamp(68px, 12vh, 100px);
+      resize: vertical;
+      border-radius: 16px;
+      border: 1px solid rgba(33, 20, 153, 0.16);
+      padding: 12px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: clamp(0.88rem, 1.4vw, 0.98rem);
+      color: var(--text);
+      outline: none;
+    }
+
+    .reflection-box textarea:focus {
+      border-color: var(--atria-teal);
+      box-shadow: 0 0 0 4px rgba(63, 194, 194, 0.18);
+    }
+
+    .result-panel {
+      display: none;
+      margin-top: clamp(12px, 2vw, 16px);
+      padding: clamp(14px, 2vw, 18px);
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(205, 255, 252, 0.74), rgba(255, 255, 255, 0.95));
+      border: 1px solid rgba(63, 194, 194, 0.35);
+      animation: fadeIn 0.28s ease both;
+      text-align: left;
+      overflow-wrap: anywhere;
+    }
+
+    .result-panel.show { display: block; }
+
+    .result-panel strong {
+      display: block;
+      color: var(--atria-blue);
+      font-size: clamp(1rem, 2vw, 1.22rem);
+      margin-bottom: 6px;
+    }
+
+    .result-panel span {
+      color: #2c3447;
+      font-size: clamp(0.86rem, 1.5vw, 0.96rem);
+      line-height: 1.6;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: clamp(12px, 2vw, 16px);
+      width: 100%;
+      flex: 0 0 auto;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: clamp(11px, 1.8vw, 13px) clamp(15px, 2.2vw, 18px);
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform 0.16s ease, background 0.16s ease;
+      min-width: min(180px, 100%);
+    }
+
+    .primary-btn {
+      background: var(--atria-blue);
+      color: #ffffff;
+    }
+
+    .secondary-btn {
+      background: #eef7f7;
+      color: var(--atria-navy);
+      border: 1px solid rgba(33, 20, 153, 0.12);
+    }
+
+    .primary-btn:hover,
+    .secondary-btn:hover,
+    .primary-btn:focus-visible,
+    .secondary-btn:focus-visible {
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    .primary-btn:hover,
+    .primary-btn:focus-visible {
+      background: var(--atria-navy);
+    }
+
+    .footer-note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: clamp(0.76rem, 1.4vw, 0.88rem);
+      text-align: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (min-width: 1180px) {
+      .activity-shell {
+        width: min(1280px, 100%);
+      }
+
+      .content {
+        grid-template-columns: minmax(300px, 0.75fr) minmax(560px, 1.25fr);
+      }
+
+      .sense-card {
+        grid-template-columns: minmax(120px, 170px) minmax(0, 1fr);
+      }
+
+      .reflection-box textarea {
+        min-height: 88px;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .activity-shell { max-height: none; }
+      .content { grid-template-columns: 1fr; }
+      .sense-card { grid-template-columns: minmax(80px, 0.28fr) minmax(0, 1fr); }
+    }
+
+    @media (max-width: 760px) {
+      body { place-items: start center; }
+      .hero { padding: 18px; }
+      .content { padding: 14px; }
+      .progress-row { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 560px) {
+      :root { --page-pad: 8px; }
+      .hero { padding: 16px; }
+      .hero p { display: none; }
+      .content { padding: 12px; gap: 12px; }
+      .sense-card { grid-template-columns: 1fr; text-align: center; place-items: center; }
+      .sense-visual { border-radius: 30px; }
+      .sense-copy { width: 100%; }
+      .actions { flex-direction: column-reverse; }
+      .primary-btn,
+      .secondary-btn { width: 100%; }
+      .progress-dot { font-size: 0; padding: 8px 4px; }
+      .progress-dot::first-letter { font-size: 0.76rem; }
+    }
+
+    @media (max-width: 360px) {
+      .mini-step span,
+      .safe-note span,
+      .footer-note { display: none; }
+      .progress-row { gap: 5px; }
+      .reflection-box textarea { min-height: 58px; }
+    }
+
+    @media (min-width: 981px) and (max-height: 760px) {
+      .hero { padding: 14px 22px; }
+      .hero p { display: none; }
+      .content { padding: 14px 20px; align-items: start; }
+      .mini-steps { gap: 7px; }
+      .mini-step { padding: 8px 10px; }
+      .sense-visual { width: clamp(86px, 11vw, 120px); height: clamp(86px, 11vw, 120px); }
+      .sense-title { font-size: clamp(1.18rem, 2.4vw, 1.8rem); }
+      .sense-prompt { line-height: 1.5; }
+      .trivia-box,
+      .micro-action { padding: 12px; margin-top: 10px; }
+      .reflection-box textarea { min-height: 56px; }
+      .footer-note { margin-top: 8px; }
+    }
+
+    @media (max-height: 640px) {
+      .hero p,
+      .guide-panel p,
+      .mini-step span,
+      .safe-note span,
+      .footer-note { display: none; }
+      .eyebrow { margin-bottom: 8px; }
+      .reflection-box textarea { min-height: 54px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="activity-shell" aria-labelledby="page-title">
+    <section class="hero">
+      <div class="eyebrow">🌈 Brain Break 05 · Sensory Focus Reset</div>
+      <h1 id="page-title">5 Senses Focus Reset</h1>
+      <p>Use sight, sound, touch, smell, and taste to slow down, reset attention, and return to the course with a clearer mind.</p>
+    </section>
+
+    <section class="content">
+      <aside class="panel guide-panel">
+        <div>
+          <h2>How this helps</h2>
+          <p>This short sensory activity helps learners reconnect with the present moment. It gives the brain a calm reset before the next lesson.</p>
+
+          <div class="mini-steps" aria-label="Activity flow">
+            <div class="mini-step">
+              <div class="mini-icon">1</div>
+              <div>
+                <strong>Notice one sense at a time</strong>
+                <span>Follow each card from sight to taste.</span>
+              </div>
+            </div>
+
+            <div class="mini-step">
+              <div class="mini-icon">2</div>
+              <div>
+                <strong>Keep it simple</strong>
+                <span>You do not need perfect answers. Just notice what is around you.</span>
+              </div>
+            </div>
+
+            <div class="mini-step">
+              <div class="mini-icon">3</div>
+              <div>
+                <strong>Return with focus</strong>
+                <span>After the last sense, take one breath and continue learning.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="safe-note">
+          <div class="safe-icon">☕</div>
+          <div>
+            <strong>Optional note</strong>
+            <span>For taste, use water, coffee, mint, or simply notice the neutral taste in your mouth.</span>
+          </div>
+        </div>
+      </aside>
+
+      <section class="panel sense-panel">
+        <h2 id="activityTitle">Begin with your senses</h2>
+        <p id="activityInstruction">Move through each sense. You may type a short note, or simply think about your answer.</p>
+
+        <div class="progress-row" aria-label="Sensory progress">
+          <div class="progress-dot active" id="dot0">Sight</div>
+          <div class="progress-dot" id="dot1">Sound</div>
+          <div class="progress-dot" id="dot2">Touch</div>
+          <div class="progress-dot" id="dot3">Smell</div>
+          <div class="progress-dot" id="dot4">Taste</div>
+        </div>
+
+        <article class="sense-card" aria-live="polite">
+          <div class="sense-visual" id="senseIcon" aria-hidden="true">👀</div>
+          <div class="sense-copy">
+            <div class="sense-label" id="senseLabel">Sense 1 of 5 · Sight</div>
+            <h3 class="sense-title" id="senseTitle">Look around.</h3>
+            <p class="sense-prompt" id="sensePrompt">Name five things you can see. Notice color, shape, light, or small details around you.</p>
+            <div class="micro-action" id="senseAction">Try this: slowly look left, center, and right. Let your eyes settle on five visible details.</div>
+            <div class="trivia-box" id="senseTrivia">
+              <strong>Did you know?</strong>
+              <span>Your brain uses visual details to quickly understand where you are and what needs attention.</span>
+            </div>
+          </div>
+        </article>
+
+        <div class="reflection-box">
+          <label for="senseNote" id="noteLabel">Optional: Write one thing you noticed</label>
+          <textarea id="senseNote" placeholder="Example: I noticed the light on my desk..."></textarea>
+        </div>
+
+        <div class="result-panel" id="resultPanel" aria-live="polite">
+          <strong>Focus reset complete.</strong>
+          <span>You used all five senses. Take one slow breath, relax your shoulders, and continue the course when you are ready.</span>
+        </div>
+
+        <div class="actions">
+          <button class="secondary-btn" type="button" id="backBtn">Back</button>
+          <button class="primary-btn" type="button" id="nextBtn">I noticed this</button>
+          <button class="secondary-btn" type="button" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="footer-note">Suggested time: 1–3 minutes</div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const root = document.documentElement;
+    const activityTitle = document.getElementById('activityTitle');
+    const activityInstruction = document.getElementById('activityInstruction');
+    const senseIcon = document.getElementById('senseIcon');
+    const senseLabel = document.getElementById('senseLabel');
+    const senseTitle = document.getElementById('senseTitle');
+    const sensePrompt = document.getElementById('sensePrompt');
+    const senseAction = document.getElementById('senseAction');
+    const senseTrivia = document.getElementById('senseTrivia');
+    const senseNote = document.getElementById('senseNote');
+    const noteLabel = document.getElementById('noteLabel');
+    const resultPanel = document.getElementById('resultPanel');
+    const backBtn = document.getElementById('backBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    const senses = [
+      {
+        key: 'Sight',
+        icon: '👀',
+        title: 'Look around.',
+        prompt: 'Name five things you can see. Notice color, shape, light, or small details around you.',
+        action: 'Try this: slowly look left, center, and right. Let your eyes settle on five visible details.',
+        placeholder: 'Example: I noticed the light on my desk...',
+        trivia: 'Your brain uses visual details to quickly understand where you are and what needs attention. Looking around slowly can help the mind feel more oriented and ready to learn.'
+      },
+      {
+        key: 'Sound',
+        icon: '👂',
+        title: 'Listen carefully.',
+        prompt: 'Name four sounds you can hear. They may be near, far, loud, soft, or even almost silent.',
+        action: 'Try this: pause for ten seconds and listen without judging the sound. Just notice it.',
+        placeholder: 'Example: I noticed the aircon sound...',
+        trivia: 'Sound can pull attention back to the present moment. Even quiet background sounds can help you notice your environment instead of staying lost in thoughts.'
+      },
+      {
+        key: 'Touch',
+        icon: '✋',
+        title: 'Feel your contact points.',
+        prompt: 'Name three things you can feel. Notice your chair, feet on the floor, clothes, desk, or hands.',
+        action: 'Try this: press your feet gently into the floor and relax your shoulders.',
+        placeholder: 'Example: I noticed my feet on the floor...',
+        trivia: 'Touch is useful for grounding. Feeling your feet, chair, desk, or hands can remind the body that it is safe, steady, and ready to focus.'
+      },
+      {
+        key: 'Smell',
+        icon: '🌿',
+        title: 'Notice the air.',
+        prompt: 'Name two things you can smell. If there is no strong smell, simply notice the air as you breathe in.',
+        action: 'Try this: take one slow breath through your nose, then breathe out gently.',
+        placeholder: 'Example: I noticed coffee nearby...',
+        trivia: 'Smell is strongly connected with memory and emotion. A familiar smell, such as coffee or fresh air, can quickly change how alert or calm you feel.'
+      },
+      {
+        key: 'Taste',
+        icon: '☕',
+        title: 'Notice taste or breath.',
+        prompt: 'Name one taste you notice. This can be water, coffee, mint, food, or just the neutral taste in your mouth.',
+        action: 'Try this: take a small sip if you have water nearby. If not, take one slow breath and notice your mouth relaxing.',
+        placeholder: 'Example: I noticed the taste of water...',
+        trivia: 'Taste can be a small but powerful reset. Taking a sip of water or noticing a neutral taste gives your brain a simple present-moment signal.'
+      }
+    ];
+
+    let currentIndex = 0;
+    const notes = new Array(senses.length).fill('');
+
+    function setViewportHeight() {
+      root.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+    }
+
+    function updateProgress() {
+      senses.forEach((_, index) => {
+        const dot = document.getElementById(`dot${index}`);
+        dot.classList.remove('active', 'done');
+        if (index < currentIndex) dot.classList.add('done');
+        if (index === currentIndex) dot.classList.add('active');
+      });
+    }
+
+    function renderSense() {
+      const sense = senses[currentIndex];
+      senseIcon.textContent = sense.icon;
+      senseLabel.textContent = `Sense ${currentIndex + 1} of ${senses.length} · ${sense.key}`;
+      senseTitle.textContent = sense.title;
+      sensePrompt.textContent = sense.prompt;
+      senseAction.textContent = sense.action;
+      senseTrivia.innerHTML = `<strong>Did you know?</strong><span>${sense.trivia}</span>`;
+      noteLabel.textContent = `Optional: Write one thing you noticed for ${sense.key.toLowerCase()}`;
+      senseNote.placeholder = sense.placeholder;
+      senseNote.value = notes[currentIndex];
+      activityTitle.textContent = currentIndex === 0 ? 'Begin with your senses' : `Continue with ${sense.key.toLowerCase()}`;
+      activityInstruction.textContent = currentIndex === senses.length - 1
+        ? 'This is the final sense. Notice it calmly, then complete your reset.'
+        : 'Move through each sense. You may type a short note, or simply think about your answer.';
+      backBtn.disabled = currentIndex === 0;
+      nextBtn.textContent = currentIndex === senses.length - 1 ? 'Complete reset' : 'I noticed this';
+      resultPanel.classList.remove('show');
+      updateProgress();
+    }
+
+    function completeActivity() {
+      senses.forEach((_, index) => {
+        const dot = document.getElementById(`dot${index}`);
+        dot.classList.remove('active');
+        dot.classList.add('done');
+      });
+      activityTitle.textContent = 'Well done.';
+      activityInstruction.textContent = 'You used your senses to reset your attention.';
+      resultPanel.innerHTML = `
+        <strong>Why senses matter when learning something new</strong>
+        <span>Learning is not only about reading or listening. Your senses help your brain notice, connect, remember, and stay present. When learners use different senses, they can become more engaged and better prepared to absorb new information.</span>
+        <ul class="final-list">
+          <li><strong>Sight</strong> helps you observe details and patterns.</li>
+          <li><strong>Sound</strong> helps you listen, follow rhythm, and stay attentive.</li>
+          <li><strong>Touch</strong> helps you feel grounded and physically present.</li>
+          <li><strong>Smell and taste</strong> can connect learning with memory, mood, and experience.</li>
+        </ul>
+      `;
+      resultPanel.classList.add('show');
+      nextBtn.textContent = 'Done';
+      nextBtn.disabled = true;
+      resultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function saveCurrentNote() {
+      notes[currentIndex] = senseNote.value.trim();
+    }
+
+    function nextSense() {
+      saveCurrentNote();
+      if (currentIndex >= senses.length - 1) {
+        completeActivity();
+        return;
+      }
+      currentIndex += 1;
+      renderSense();
+    }
+
+    function previousSense() {
+      saveCurrentNote();
+      if (currentIndex === 0) return;
+      currentIndex -= 1;
+      renderSense();
+    }
+
+    function resetActivity() {
+      currentIndex = 0;
+      notes.fill('');
+      nextBtn.disabled = false;
+      document.querySelector('.activity-shell').scrollTo({ top: 0, behavior: 'smooth' });
+      renderSense();
+    }
+
+    setViewportHeight();
+    window.addEventListener('resize', setViewportHeight);
+    window.addEventListener('orientationchange', setViewportHeight);
+    nextBtn.addEventListener('click', nextSense);
+    backBtn.addEventListener('click', previousSense);
+    resetBtn.addEventListener('click', resetActivity);
+    renderSense();
+  </script>
+</body>
+</html>
