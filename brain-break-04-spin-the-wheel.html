@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brain Break 04 - Movement Wheel</title>
+  <style>
+    :root {
+      --atria-blue: #211499;
+      --atria-navy: #000C48;
+      --atria-teal: #3FC2C2;
+      --atria-neon: #63F8EF;
+      --atria-light: #CDFFFC;
+      --card-bg: rgba(255, 255, 255, 0.96);
+      --text: #172033;
+      --muted: #5b6475;
+      --shadow: 0 18px 46px rgba(0, 12, 72, 0.22);
+      --radius: clamp(16px, 2vw, 24px);
+      --page-pad: clamp(8px, 2vw, 20px);
+      --shell-height: calc(var(--vh, 1vh) * 100 - (var(--page-pad) * 2));
+      --wheel-size: clamp(250px, min(48vw, 62vh), 460px);
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100svh;
+      background:
+        radial-gradient(circle at top left, rgba(99, 248, 239, 0.42), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(63, 194, 194, 0.35), transparent 32%),
+        linear-gradient(135deg, var(--atria-navy), var(--atria-blue));
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      padding: var(--page-pad);
+    }
+
+    .game-shell {
+      width: min(1180px, 100%);
+      max-height: var(--shell-height);
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: auto;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero {
+      background:
+        linear-gradient(135deg, rgba(33, 20, 153, 0.96), rgba(0, 12, 72, 0.98)),
+        radial-gradient(circle at right, rgba(63, 194, 194, 0.6), transparent 40%);
+      color: #fff;
+      padding: clamp(16px, 3vw, 32px);
+      position: relative;
+      overflow: hidden;
+      flex: 0 0 auto;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: clamp(150px, 24vw, 220px);
+      height: clamp(150px, 24vw, 220px);
+      border-radius: 50%;
+      background: rgba(99, 248, 239, 0.14);
+      right: clamp(-90px, -8vw, -50px);
+      top: clamp(-90px, -8vw, -50px);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      color: var(--atria-light);
+      font-size: clamp(0.72rem, 1.4vw, 0.86rem);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin-bottom: clamp(8px, 1.5vw, 12px);
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.65rem, 4.2vw, 3.2rem);
+      line-height: 1;
+      letter-spacing: -0.05em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero p {
+      max-width: 780px;
+      margin: clamp(8px, 1.5vw, 12px) 0 0;
+      font-size: clamp(0.88rem, 1.6vw, 1.06rem);
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.86);
+      position: relative;
+      z-index: 1;
+    }
+
+    .content {
+      padding: clamp(12px, 2.4vw, 26px);
+      display: grid;
+      grid-template-columns: minmax(280px, 0.92fr) minmax(320px, 1.08fr);
+      gap: clamp(12px, 2vw, 22px);
+      align-items: stretch;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .panel {
+      background: #fff;
+      border: 1px solid rgba(33, 20, 153, 0.1);
+      border-radius: clamp(16px, 2vw, 22px);
+      padding: clamp(12px, 2vw, 20px);
+    }
+
+    .guide-panel {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(12px, 2vw, 18px);
+      justify-content: space-between;
+    }
+
+    .guide-panel h2,
+    .wheel-panel h2 {
+      margin: 0 0 8px;
+      color: var(--atria-blue);
+      font-size: clamp(1.05rem, 2.2vw, 1.5rem);
+      letter-spacing: -0.03em;
+    }
+
+    .guide-panel p,
+    .wheel-panel p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: clamp(0.85rem, 1.45vw, 1rem);
+    }
+
+    .movement-list {
+      display: grid;
+      gap: clamp(8px, 1.4vw, 10px);
+      margin-top: clamp(10px, 1.8vw, 14px);
+    }
+
+    .movement-item,
+    .safe-note {
+      display: grid;
+      grid-template-columns: clamp(34px, 4vw, 40px) minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      padding: clamp(9px, 1.6vw, 12px);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #ffffff, #f2fffe);
+      border: 1px solid rgba(63, 194, 194, 0.24);
+    }
+
+    .safe-note {
+      margin-top: 14px;
+      background: linear-gradient(180deg, #ffffff, #f8ffff);
+      border-style: dashed;
+    }
+
+    .movement-icon,
+    .safe-icon {
+      width: clamp(34px, 4vw, 40px);
+      height: clamp(34px, 4vw, 40px);
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: var(--atria-blue);
+      color: #fff;
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      font-weight: 900;
+    }
+
+    .movement-item strong,
+    .safe-note strong {
+      display: block;
+      color: var(--atria-navy);
+      font-size: clamp(0.86rem, 1.4vw, 0.96rem);
+      margin-bottom: 2px;
+    }
+
+    .movement-item span,
+    .safe-note span {
+      display: block;
+      color: var(--muted);
+      font-size: clamp(0.76rem, 1.3vw, 0.84rem);
+      line-height: 1.4;
+    }
+
+    .wheel-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .wheel-stage {
+      position: relative;
+      width: var(--wheel-size);
+      height: var(--wheel-size);
+      max-width: 100%;
+      margin: clamp(10px, 2vw, 18px) auto;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+    }
+
+    .pointer {
+      position: absolute;
+      top: clamp(-4px, -0.6vw, 0px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: clamp(14px, 2vw, 20px) solid transparent;
+      border-right: clamp(14px, 2vw, 20px) solid transparent;
+      border-top: clamp(28px, 4vw, 42px) solid var(--atria-navy);
+      z-index: 5;
+      filter: drop-shadow(0 7px 10px rgba(0, 12, 72, 0.28));
+    }
+
+    .wheel-wrap {
+      position: relative;
+      width: 92%;
+      height: 92%;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      box-shadow: 0 22px 52px rgba(0, 12, 72, 0.24);
+      border: clamp(6px, 1vw, 10px) solid #ffffff;
+      overflow: hidden;
+    }
+
+    svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
+
+    #wheelGroup {
+      transform-origin: 50% 50%;
+      transition: transform 4.8s cubic-bezier(0.14, 0.78, 0.16, 1);
+      will-change: transform;
+    }
+
+    .wheel-segment {
+      stroke: rgba(255, 255, 255, 0.7);
+      stroke-width: 1.6;
+    }
+
+    .wheel-text {
+      fill: #ffffff;
+      font-weight: 900;
+      font-size: 4.6px;
+      letter-spacing: -0.15px;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      text-shadow: 0 1.2px 4px rgba(0, 12, 72, 0.45);
+      pointer-events: none;
+    }
+
+    .wheel-text.dark-text {
+      fill: var(--atria-navy);
+      text-shadow: none;
+    }
+
+    .center-button {
+      position: relative;
+      z-index: 4;
+      width: clamp(86px, 18%, 116px);
+      height: clamp(86px, 18%, 116px);
+      border-radius: 50%;
+      border: 6px solid #ffffff;
+      background: linear-gradient(145deg, #ffffff, #eafffd);
+      color: var(--atria-blue);
+      box-shadow: 0 14px 30px rgba(0, 12, 72, 0.22);
+      font-weight: 900;
+      font-size: clamp(0.9rem, min(2vw, 2vh), 1.12rem);
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .center-button:hover,
+    .center-button:focus-visible {
+      transform: scale(1.04);
+      box-shadow: 0 18px 38px rgba(0, 12, 72, 0.28);
+      outline: none;
+    }
+
+    .center-button:disabled {
+      opacity: 0.72;
+      cursor: wait;
+      transform: none;
+    }
+
+    .result-panel {
+      display: none;
+      width: min(100%, 560px);
+      margin-top: clamp(8px, 1.5vw, 14px);
+      padding: clamp(14px, 2vw, 18px);
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(205, 255, 252, 0.74), rgba(255, 255, 255, 0.95));
+      border: 1px solid rgba(63, 194, 194, 0.35);
+      animation: fadeIn 0.28s ease both;
+      text-align: left;
+    }
+
+    .result-panel.show { display: block; }
+
+    .result-panel strong {
+      display: block;
+      color: var(--atria-blue);
+      font-size: clamp(1rem, 2vw, 1.22rem);
+      margin-bottom: 6px;
+    }
+
+    .result-panel span {
+      color: #2c3447;
+      font-size: clamp(0.86rem, 1.5vw, 0.96rem);
+      line-height: 1.6;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: clamp(12px, 2vw, 16px);
+      width: 100%;
+    }
+
+    .secondary-btn {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: clamp(11px, 1.8vw, 13px) clamp(15px, 2.2vw, 18px);
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform 0.16s ease, background 0.16s ease;
+      background: #eef7f7;
+      color: var(--atria-navy);
+      border: 1px solid rgba(33, 20, 153, 0.12);
+      min-width: min(180px, 100%);
+    }
+
+    .secondary-btn:hover,
+    .secondary-btn:focus-visible {
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    .footer-note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: clamp(0.76rem, 1.4vw, 0.88rem);
+      text-align: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 980px) {
+      :root { --wheel-size: clamp(270px, 68vw, 430px); }
+      .game-shell { max-height: none; }
+      .content { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      :root { --wheel-size: clamp(260px, 84vw, 390px); }
+      body { place-items: start center; }
+      .hero { padding: 18px; }
+      .content { padding: 14px; }
+    }
+
+    @media (max-width: 460px) {
+      :root {
+        --page-pad: 8px;
+        --wheel-size: clamp(250px, 92vw, 330px);
+      }
+
+      .hero { padding: 16px; }
+      .hero p { display: none; }
+      .content { padding: 12px; gap: 12px; }
+      .actions { flex-direction: column; }
+      .secondary-btn { width: 100%; }
+      .wheel-text { font-size: 4.05px; letter-spacing: -0.25px; }
+    }
+
+    @media (max-width: 340px) {
+      :root { --wheel-size: 242px; }
+      .movement-item span,
+      .safe-note span,
+      .footer-note { display: none; }
+      .wheel-text { font-size: 3.65px; letter-spacing: -0.3px; }
+    }
+
+    @media (min-width: 981px) and (max-height: 760px) {
+      :root { --wheel-size: clamp(250px, 58vh, 340px); }
+      .hero { padding: 14px 22px; }
+      .hero p { display: none; }
+      .content { padding: 14px 20px; }
+      .movement-list { gap: 7px; }
+      .movement-item { padding: 8px 10px; }
+      .footer-note { margin-top: 8px; }
+    }
+
+    @media (max-height: 620px) {
+      .hero p,
+      .guide-panel p,
+      .movement-item span,
+      .safe-note span,
+      .footer-note { display: none; }
+      .eyebrow { margin-bottom: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="game-shell" aria-labelledby="page-title">
+    <section class="hero">
+      <div class="eyebrow">🎡 Brain Break 04 · Movement Reset</div>
+      <h1 id="page-title">Movement Wheel</h1>
+      <p>Spin the wheel and complete one movement prompt. This short break helps reset your posture, body, and energy before continuing the course.</p>
+    </section>
+
+    <section class="content">
+      <aside class="panel guide-panel">
+        <div>
+          <h2>How to play</h2>
+          <p>Press spin, wait for the wheel to stop, then complete the single movement prompt shown below the wheel.</p>
+
+          <div class="movement-list" aria-label="Movement break examples">
+            <div class="movement-item">
+              <div class="movement-icon">🧍</div>
+              <div>
+                <strong>Posture and body reset</strong>
+                <span>Stand, stretch, or correct your sitting position.</span>
+              </div>
+            </div>
+
+            <div class="movement-item">
+              <div class="movement-icon">⚡</div>
+              <div>
+                <strong>Energy movement</strong>
+                <span>Wake up your body with simple movement.</span>
+              </div>
+            </div>
+
+            <div class="movement-item">
+              <div class="movement-icon">👀</div>
+              <div>
+                <strong>Screen break</strong>
+                <span>Give your eyes and face a short reset.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="safe-note">
+          <div class="safe-icon">!</div>
+          <div>
+            <strong>Move safely</strong>
+            <span>Choose a safe version of the movement for your space. Stop if anything feels uncomfortable.</span>
+          </div>
+        </div>
+      </aside>
+
+      <section class="panel wheel-panel">
+        <h2 id="wheelTitle">Ready to spin?</h2>
+        <p id="wheelInstruction">Tap the center button and let the wheel choose one movement reset.</p>
+
+        <div class="wheel-stage" aria-label="Movement wheel game">
+          <div class="pointer" aria-hidden="true"></div>
+          <div class="wheel-wrap">
+            <svg viewBox="0 0 100 100" role="img" aria-label="Spin wheel with movement options">
+              <g id="wheelGroup"></g>
+            </svg>
+            <button class="center-button" type="button" id="spinBtn" aria-label="Spin the movement wheel">Spin</button>
+          </div>
+        </div>
+
+        <div class="result-panel" id="resultPanel" aria-live="polite">
+          <strong id="resultTitle">Spin to begin.</strong>
+          <span id="resultText">One movement prompt will appear here after the wheel stops.</span>
+        </div>
+
+        <div class="actions">
+          <button class="secondary-btn" type="button" id="resetBtn">Reset wheel</button>
+        </div>
+
+        <div class="footer-note">Suggested time: 1–5 minutes, depending on the selected movement.</div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const root = document.documentElement;
+    const wheelGroup = document.getElementById('wheelGroup');
+    const spinBtn = document.getElementById('spinBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const resultPanel = document.getElementById('resultPanel');
+    const resultTitle = document.getElementById('resultTitle');
+    const resultText = document.getElementById('resultText');
+    const wheelTitle = document.getElementById('wheelTitle');
+    const wheelInstruction = document.getElementById('wheelInstruction');
+
+    const prompts = [
+      {
+        label: 'Posture',
+        color: '#211499',
+        darkText: false,
+        title: 'Posture check',
+        text: 'Are you slouching while taking the course? Slouching can strain your neck, shoulders, and back. Sit taller, relax your shoulders, place both feet on the floor, and hold this better posture for 20 seconds.'
+      },
+      {
+        label: 'Shoulders',
+        color: '#3FC2C2',
+        darkText: true,
+        title: 'Shoulder roll reset',
+        text: 'Roll your shoulders backward 5 times, then forward 5 times. Keep the movement slow and relaxed to release tension from sitting.'
+      },
+      {
+        label: 'Neck',
+        color: '#000C48',
+        darkText: false,
+        title: 'Gentle neck reset',
+        text: 'Slowly tilt your head to the left, then to the right. Hold each side for 5 seconds. Keep it gentle and avoid forcing the stretch.'
+      },
+      {
+        label: 'Walk',
+        color: '#63F8EF',
+        darkText: true,
+        title: 'Take a short walk',
+        text: 'Stand up and walk for 2–5 minutes if your space allows. Walk around the room, get water, or simply move away from the screen for a moment.'
+      },
+      {
+        label: 'Stretch',
+        color: '#211499',
+        darkText: false,
+        title: 'Desk stretch',
+        text: 'Reach both arms up, stretch gently, then extend your arms forward and open your hands. Hold each stretch for 10 seconds.'
+      },
+      {
+        label: 'Push',
+        color: '#3FC2C2',
+        darkText: true,
+        title: 'Wall or desk push-ups',
+        text: 'Do 5–10 wall push-ups or desk push-ups if it is safe for you. Keep your body controlled and stop if it feels uncomfortable.'
+      },
+      {
+        label: 'Legs',
+        color: '#000C48',
+        darkText: false,
+        title: 'Wake up your legs',
+        text: 'Stand up and do 10 calf raises or 10 gentle knee bends. This helps your body feel more awake after sitting.'
+      },
+      {
+        label: 'Eyes',
+        color: '#63F8EF',
+        darkText: true,
+        title: 'Eye and screen break',
+        text: 'Look away from the screen and focus on something far away for 20 seconds. Then blink slowly 5 times and relax your face.'
+      }
+    ];
+
+    let currentRotation = 0;
+    let isSpinning = false;
+
+    function setViewportHeight() {
+      root.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+    }
+
+    function polarToCartesian(cx, cy, r, angleDeg) {
+      const angleRad = (angleDeg - 90) * Math.PI / 180;
+      return {
+        x: cx + r * Math.cos(angleRad),
+        y: cy + r * Math.sin(angleRad)
+      };
+    }
+
+    function describeArc(cx, cy, r, startAngle, endAngle) {
+      const start = polarToCartesian(cx, cy, r, endAngle);
+      const end = polarToCartesian(cx, cy, r, startAngle);
+      const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
+      return `M ${cx} ${cy} L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} 0 ${end.x} ${end.y} Z`;
+    }
+
+    function drawWheel() {
+      const segmentAngle = 360 / prompts.length;
+      wheelGroup.innerHTML = '';
+
+      prompts.forEach((prompt, index) => {
+        const startAngle = index * segmentAngle;
+        const endAngle = startAngle + segmentAngle;
+        const middleAngle = startAngle + segmentAngle / 2;
+        const textPoint = polarToCartesian(50, 50, 31, middleAngle);
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', describeArc(50, 50, 49, startAngle, endAngle));
+        path.setAttribute('fill', prompt.color);
+        path.setAttribute('class', 'wheel-segment');
+        wheelGroup.appendChild(path);
+
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', textPoint.x);
+        text.setAttribute('y', textPoint.y);
+        text.setAttribute('class', `wheel-text${prompt.darkText ? ' dark-text' : ''}`);
+        text.setAttribute('transform', `rotate(${middleAngle}, ${textPoint.x}, ${textPoint.y})`);
+        text.textContent = prompt.label;
+        wheelGroup.appendChild(text);
+      });
+
+      const center = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      center.setAttribute('cx', '50');
+      center.setAttribute('cy', '50');
+      center.setAttribute('r', '10');
+      center.setAttribute('fill', 'rgba(255,255,255,0.18)');
+      wheelGroup.appendChild(center);
+    }
+
+    function updateResult(prompt) {
+      resultTitle.textContent = prompt.title;
+      resultText.textContent = prompt.text;
+      resultPanel.classList.add('show');
+      wheelTitle.textContent = prompt.label;
+      wheelInstruction.textContent = 'Complete this movement prompt, then continue when you are ready.';
+    }
+
+    function spinWheel() {
+      if (isSpinning) return;
+      isSpinning = true;
+      spinBtn.disabled = true;
+      spinBtn.textContent = '...';
+      wheelTitle.textContent = 'Spinning...';
+      wheelInstruction.textContent = 'Wait for the wheel to stop, then follow the selected movement.';
+      resultPanel.classList.remove('show');
+
+      const selectedIndex = Math.floor(Math.random() * prompts.length);
+      const segmentAngle = 360 / prompts.length;
+      const selectedCenterAngle = selectedIndex * segmentAngle + segmentAngle / 2;
+      const extraSpins = 5 + Math.floor(Math.random() * 3);
+      const finalRotation = extraSpins * 360 - selectedCenterAngle;
+
+      currentRotation += finalRotation;
+      wheelGroup.style.transform = `rotate(${currentRotation}deg)`;
+
+      window.setTimeout(() => {
+        isSpinning = false;
+        spinBtn.disabled = false;
+        spinBtn.textContent = 'Spin';
+        updateResult(prompts[selectedIndex]);
+      }, 4900);
+    }
+
+    function resetWheel() {
+      if (isSpinning) return;
+      currentRotation = 0;
+      wheelGroup.style.transition = 'transform 0.6s ease-in-out';
+      wheelGroup.style.transform = 'rotate(0deg)';
+
+      window.setTimeout(() => {
+        wheelGroup.style.transition = 'transform 4.8s cubic-bezier(0.14, 0.78, 0.16, 1)';
+      }, 650);
+
+      resultPanel.classList.remove('show');
+      resultTitle.textContent = 'Spin to begin.';
+      resultText.textContent = 'One movement prompt will appear here after the wheel stops.';
+      wheelTitle.textContent = 'Ready to spin?';
+      wheelInstruction.textContent = 'Tap the center button and let the wheel choose one movement reset.';
+    }
+
+    setViewportHeight();
+    drawWheel();
+    window.addEventListener('resize', setViewportHeight);
+    window.addEventListener('orientationchange', setViewportHeight);
+    spinBtn.addEventListener('click', spinWheel);
+    resetBtn.addEventListener('click', resetWheel);
+  </script>
+</body>
+</html>
